@@ -44,7 +44,7 @@ var taskQueue = function (worker, concurrency) {
 
 
 
-var CONCURRENT_TASKS = 500;
+var CONCURRENT_TASKS = 500;  // Can be changed live.
 
 var q = taskQueue(function (task, callback) {
   console.log('hello ' + task.name);
@@ -65,3 +65,60 @@ q.push({name: 'foo'}, function (err) {
 q.push({name: 'bar'}, function (err) {
   console.log('finished processing bar');
 });
+
+
+
+
+
+
+
+var compression = require('compression');
+var express = require('express');
+var bodyParser = require('body-parser');
+var logger = require('morgan');
+var errorHandler = require('errorhandler');
+var dotenv = require('dotenv');
+
+
+// Load environment variables from .env file.
+dotenv.load({ path: '.env' });
+
+var queueController = require('./controllers/queue');
+var publisherController = require('./controllers/publisher');
+var consumerController = require('./controllers/consumer');
+
+var app = express();
+app.set('port', process.env.PORT || 3000);
+app.use(compression());
+app.use(logger('prod'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+// Queue Management
+app.get('/queues', queueController.get );
+app.post('/queues', queueController.post );
+app.put('/queues/:id', queueController.put );
+app.delete('/queues/:id', queueController.delete );
+
+// Publish Messages
+app.post('/queues/:id/messages', publisherController.post );
+
+// Consume Messages
+app.post('/queues/:id/consumers', consumerController.post );
+app.get('/queues/:id/consumers', consumerController.get );
+app.delete('/queues/:id/consumers/:consumer_id', consumerController.delete );
+
+/**
+ * Error Handler.
+ */
+app.use(errorHandler());
+
+/**
+ * Start Express server.
+ */
+app.listen(app.get('port'), function() {
+  console.log('Message Broker server listening on port %d in %s mode', app.get('port'), app.get('env'));
+});
+
+module.exports = app;

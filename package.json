@@ -9,6 +9,13 @@
   "author": "John Gracey",
   "license": "ISC",
   "dependencies": {
-    "double-ended-queue": "^0.9.7"
+    "body-parser": "^1.14.2",
+    "compression": "^1.6.1",
+    "dotenv": "^2.0.0",
+    "double-ended-queue": "^0.9.7",
+    "errorhandler": "^1.4.3",
+    "express": "^4.13.4",
+    "morgan": "^1.6.1",
+    "request": "^2.69.0"
   }
 }

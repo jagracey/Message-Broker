@@ -1,5 +1,7 @@
 #Message Broker Project
 
+node version 5.5.0
+
 
 TODO:
 - Broker
