@@ -9,19 +9,23 @@ TODO:
 
 (function () {
   "use strict";
+
+  var Deque = require('double-ended-queue');
+
   // Queue -- https://github.com/caolan/async/blob/master/deps/nodeunit.js#L1050
   async.queue = function (worker, concurrency) {
       var workers = 0;
-      var tasks = [];
+
+      tasks = new Deque(1000); // Set initial capactity at 10,000
       var q = {
           concurrency: concurrency,
           push: function (data, callback) {
-              tasks.push({data: data, callback: callback});
-              async.nextTick(q.process);
+              tasks.insertFront({data: data, callback: callback});
+              process.nextTick(q.process);
           },
           process: function () {
-              if (workers < q.concurrency && tasks.length) {
-                  var task = tasks.splice(0, 1)[0];
+              if (workers < q.concurrency && tasks.isEmpty()) {
+                  var task = tasks.removeBack();
                   workers += 1;
                   worker(task.data, function () {
                       workers -= 1;
@@ -32,9 +36,6 @@ TODO:
                   });
               }
           },
-          length: function () {
-              return tasks.length;
-          }
       };
       return q;
   };
