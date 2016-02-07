@@ -1,0 +1,14 @@
+{
+  "name": "message-broker",
+  "version": "0.0.0",
+  "description": "",
+  "main": "broker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "John Gracey",
+  "license": "ISC",
+  "dependencies": {
+    "double-ended-queue": "^0.9.7"
+  }
+}
