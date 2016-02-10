@@ -1,13 +1,22 @@
 {
   "name": "message-broker",
   "version": "0.0.0",
-  "description": "",
+  "description": "Publish-Subscribe Message Broker.",
   "main": "broker.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server/broker.js",
+    "broker": "node server/broker.js",
+    "consumer": "node clients/consumer.js",
+    "producer": "node clients/producer.js",
+    "bash-test": "bash tests/test.sh",
+    "test": "mocha tests/main.js --reporter spec --timeout 3000"
   },
   "author": "John Gracey",
-  "license": "ISC",
+  "license": "UNLICENSED",
+  "private": true,
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "dependencies": {
     "body-parser": "^1.14.2",
     "compression": "^1.6.1",
@@ -16,6 +25,12 @@
     "errorhandler": "^1.4.3",
     "express": "^4.13.4",
     "morgan": "^1.6.1",
+    "querystring": "^0.2.0",
     "request": "^2.69.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "should": "^8.2.1",
+    "supertest": "^1.1.0"
   }
 }

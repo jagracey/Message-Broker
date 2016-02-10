@@ -1,13 +1,5 @@
 "use strict";
 
-/*
-Asumptions and Choices:
-
-- Consumer simply needs to respond with a 2XX status code, doesn't read text.
-- Each Queue gets its own queue data structure.
-- Failed consumer requests get put back in the beggining of the queue- without a minimum delay. MAX_REQUEST_RETRIES is set to Infinity.
-- Callback_url is not validated as a URL.
-*/
 
 global.MAX_REQUEST_RETRIES = Infinity;  // How many requests to attempt before giving up on the consumer.
 global.CONCURRENT_TASKS_PER_QUEUE = 10;
@@ -39,7 +31,8 @@ app.use(function(req, res, next){
 });
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(compression());
-app.use(logger('tiny'));
+if (!module.parent) // Conditional logging.
+  app.use(logger('tiny'));
 app.set('port', process.env.PORT || 3000);
 
 var queueManagerController = require('./controllers/queueManager');
@@ -74,4 +67,5 @@ app.listen(app.get('port'), function() {
   console.log('Message Broker server listening on port %d in %s mode', app.get('port'), app.get('env'));
 });
 
-module.exports = app;
+module.exports.app = app;
+module.exports.qManager = qManager;

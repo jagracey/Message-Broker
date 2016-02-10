@@ -15,6 +15,7 @@ echo -e '\n Four Queues'
 curl --data "name=queue#3" localhost:3000/queues
 
 echo -e '\n Five Queues'
+#curl -H "Content-Type: application/json" -X POST -d '{"name": "queue#4"}' localhost:3000/queues
 curl --data "name=queue#4" localhost:3000/queues
 
 echo -e '\n 5 Queues should display'

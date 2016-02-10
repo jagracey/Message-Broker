@@ -1,40 +1,53 @@
-"use strict";
+
 /*
   Registers to ONE Queue.
 */
+var consumer = function( queue_number, consumer_hook ){
+  "use strict";
+  const QUEUE_ID = queue_number || 2;
 
-const QUEUE_ID = 2;
+  var request = require('request');
+  var http = require('http');
+  var qs = require('querystring');
 
-var request = require('request');
-var http = require('http');
+  var server = http.createServer(function (req, res) {
+      var body = '';
+      req.on('data', function (chunk) {
+        body += chunk;
+        if (body.length > 1e6)  // 1e6 ~~~ 1MB
+          request.connection.destroy(); // FLOOD ATTACK OR FAULTY CLIENT, NUKE REQUEST
+      });
 
-var server = http.createServer(function (req, res) {
-    var body = '';
-    req.on('data', function (chunk) {
-      body += chunk;
+      req.on('end', function () {
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        var msg = {
+          status: 'ok',
+          content: qs.parse(body),      // These are used for debugging and testing with multiple consumers.
+          port: server.address().port   //
+        }
+        res.end( JSON.stringify( msg ) +'\n');
+        if (!module.parent)
+          console.log( JSON.stringify(msg) );
+        if ( typeof consumer_hook === 'function')
+          consumer_hook( msg );
+      });
+  })
+  .listen(function(){
+    var address = server.address();
+
+    console.log('Consumer Server listening on port %j', address);
+
+    request.post('http://localhost:3000/queues/'+QUEUE_ID+'/consumers',{form:{callback_url:'http://localhost:'+address.port}},function (error, res, body) {
+      if ( error || (res.statusCode / 100 | 0) !== 2 ){ // status == 2XX
+        console.log('Failed URL request...');
+      }
     });
 
-    req.on('end', function () {
-      console.log( decodeURI(body) );
-      res.writeHead(200, {'Content-Type': 'application/json'});
-      res.end('{ "status": "ok"}\n');
-    });
-
-    /*
-      If you don't care for the ENTIRE response as per broker spec,
-      you can remove the above and uncomment the below two lines
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end('{ "status": "ok"}\n');
-    */
-})
-.listen(function(){
-  var address = server.address();
-  console.log('opened server on %j', address);
-
-  request.post('http://localhost:3000/queues/'+QUEUE_ID+'/consumers',{form:{callback_url:'http://localhost:'+address.port}},function (error, res, body) {
-    if ( error || (res.statusCode / 100 | 0) !== 2 ){ // status == 2XX
-      console.log('Failed URL request...');
-    }
   });
+};
 
-});
+if (!module.parent) {
+    consumer( process.argv.slice(2)[0] );
+} else {
+    module.exports = consumer;
+}

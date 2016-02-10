@@ -4,7 +4,10 @@ var taskQueue = require('./../library/taskQueue');
 
 
 exports.get = function(req, res) {
-  return res.status(200).json(qManager);
+  var qs = qManager
+            .filter(function(q){ return q != null; })
+            .map(function(q){ return {id: q.id, name: q.name}; });
+  return res.status(200).json( qs );
 };
 
 
@@ -12,7 +15,7 @@ exports.post = function(req, res) {
   var name = req.body.name;
   var id = qManager.length;
 
-  if ( !typeof name === 'string')
+  if ( !name || !typeof name === 'string')
     return res.status(400).json({ status: 'error', error: 'Name must be of type string' });
 
   qManager.push({ id: id, name: name, consumers: [], taskQueue: taskQueue()});
@@ -26,6 +29,10 @@ exports.put = function(req, res) {
   if ( !Number.isInteger(qid) || qid < 0)
     return res.status(400).json({ status: 'error', error: 'Queue ID must be a positive integer.' });
 
+  var q = qManager[qid];
+  if (typeof q !== 'object')
+    return res.status(410).json({ status: 'error', error: 'Queue not found' });
+
   if ( !typeof name === 'string')
     return res.status(400).json({ status: 'error', error: 'Name must be of type string' });
 
@@ -33,8 +40,6 @@ exports.put = function(req, res) {
     qManager[qid].name = name;
     return res.status(200).json({ status: 'ok' });
   }
-  else
-    return res.status(410).json({ status: 'error', error: 'Queue not found' });
 };
 
 
@@ -42,6 +47,9 @@ exports.delete = function(req, res) {
   var qid = +req.params.qid;
   if ( !Number.isInteger(qid) || qid < 0)
     return res.status(400).json({ status: 'error', error: 'Queue ID must be a positive integer.' });
+
+  if ( qManager[qid] == null )
+    return res.status(410).json({ status: 'error', error: 'Queue not found.' });
 
   delete qManager[qid];
   return res.status(200).json({ status: 'ok' });

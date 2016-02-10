@@ -3,6 +3,7 @@
   Creates random data to send to the Broker.
 */
 const DELAY = 0;
+var queue = process.argv.slice(2)[0] || 2;
 
 var request = require('request');
 var crypto = require('crypto');
@@ -11,7 +12,6 @@ const NAME = crypto.createHash('md5').update( Math.random().toString() ).digest(
 var message_count = 0;
 
 function produceMessage(){
-  var queue = 2; // Math.random()*5|0;
   var payload = NAME +'|'+ (message_count++) +'|'+ queue +'|';
 
   console.log('Sending request: '+ payload);
@@ -22,10 +22,10 @@ function produceMessage(){
       body: payload,
       headers: { 'Content-Type': 'text/plain' }
     };
-    request.post(options,function (error, response, body) {
+    request.post(options,function (error, res, body) {
       if (error){
-        console.log(error,response.statusCode,body);
-        return process.exit(1);
+        console.log(error,(res)?res.statusCode:null,body);
+        return process.exit(1);           // Arbitrarily decide to exit if the Broker breaks....
       }
       console.log(body);
       setTimeout(function(){ produceMessage(); }, DELAY);
