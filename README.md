@@ -1,10 +1,12 @@
+![](https://raw.githubusercontent.com/jagracey/Broker/master/pattern.png)
+
 # Message Broker Project
 
 ***
 A pure NodeJS implementation of a simple pub/sub message broker.
 
 > Create a simple message broker queueing system with an HTTP based RESTful API coded in NodeJS.
-> The message broker needs to guarantee [lol] that messages published to the queue will be eventually be delivered to all registered consumers.
+> The message broker needs to guarantee that messages published to the queue will be eventually be delivered to all registered consumers.
 
 ## Specification Notes:
 - Consumer simply needs to respond with a 2XX status code to confirm receipt.
@@ -73,14 +75,14 @@ available via `npm run-script`:
 ***
 ### Queues management
 
-- #### `GET /queues`
+- `GET /queues`
   - Gets the list of queues
   - Returns:
      - list of queues: `[{
      id: '<queue id>',
      name: '<queue name>'
 }]`
-- #### `POST /queues`
+- `POST /queues`
   - Creates a new queue
   - Parameters:
     - name: name of new queue
@@ -89,7 +91,7 @@ available via `npm run-script`:
      status: 'ok',  
      id: '<New object id>'
 }`
-- ##### `PUT /queues/:qid`
+- `PUT /queues/:qid`
   - Edits existing queue object
    - Parameters:
     - name: new name of exisiting queue
@@ -97,7 +99,7 @@ available via `npm run-script`:
     - `{
      status: 'ok'
 }`
-- ##### `DELETE /queues/:qid`
+- `DELETE /queues/:qid`
   - Deletes existing queue object
   - Parameters:
     - name: name of queue
@@ -108,7 +110,7 @@ available via `npm run-script`:
 
 ### Publish messages
 
-- ##### `POST /queues/:qid/messages`
+- `POST /queues/:qid/messages`
   - Sends a new message to all registered consumers
   - Parameters:
     - body: message body (text)
@@ -123,7 +125,7 @@ available via `npm run-script`:
 
 ### Consume messages
 
-- ##### `GET /queues/:qid/consumers`
+- `GET /queues/:qid/consumers`
   - Return the list of consumers for the given queue.
   - Returns:
     - `
@@ -132,7 +134,7 @@ available via `npm run-script`:
             queue_id: '<queue_id>',
             callback_url: '<URL for receiving messages>'
         }]`
-- ##### `POST /queues/:qid/consumers`
+- `POST /queues/:qid/consumers`
   - Registers a new consumer
   - Parameters:
     - callback_url: URL for receiving messages
@@ -140,7 +142,7 @@ available via `npm run-script`:
     - `{
      status: 'ok'
     }`
-- ##### `DELETE /queues/:qid/consumers/:consumer_id`
+- `DELETE /queues/:qid/consumers/:consumer_id`
   - Delete the specified consumer from the queue.
   - Returns:
     - `{
