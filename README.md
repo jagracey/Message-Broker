@@ -1,6 +1,6 @@
 ![](https://raw.githubusercontent.com/jagracey/Broker/66daad9f32e035b349b0d5683f64aaf7916309d8/pattern.png)
 
-# Message Broker Project
+# [Message Broker](https://git.io/Message-Broker)
 
 ***
 A pure NodeJS implementation of a simple pub/sub message broker.
