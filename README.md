@@ -1,9 +1,6 @@
-![](https://raw.githubusercontent.com/jagracey/Broker/66daad9f32e035b349b0d5683f64aaf7916309d8/pattern.png)
+[![Message Broker](https://raw.githubusercontent.com/jagracey/Message-Broker/master/banner.jpg)](https://git.io/Message-Broker)
 
-# [Message Broker](https://git.io/Message-Broker)
-
-***
-A pure NodeJS implementation of a simple pub/sub message broker.
+## A pure NodeJS implementation of a simple pub/sub message broker.
 
 > Create a simple message broker queueing system with an HTTP based RESTful API coded in NodeJS.
 > The message broker needs to guarantee that messages published to the queue will be eventually be delivered to all registered consumers.
@@ -167,7 +164,7 @@ License
 
 The BSD-3-Clause
 
-Copyright (c) 2016, Free Code Camp
+Copyright (c) 2016, John Gracey
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
